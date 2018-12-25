@@ -22,6 +22,8 @@ sudo apt install tmux
 sudo apt install cmake
 sudo apt install build-essential
 sudo apt install clang clang-format clang-tidy
+sudo apt install vagrant 
+sudo apt install docker.io 
 
 pip3 install --user --upgrade neovim
 
@@ -32,6 +34,12 @@ pip3 install --user --upgrade neovim
 
 
 # Tmux
+
+##  Create symbolic link to tmux configuration file
+
+```bash
+ln -s /path/to/woidpointer/dotfiles/tmux/tmux.conf ~/.tmux.conf
+```
 
 
 
