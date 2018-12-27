@@ -24,6 +24,7 @@ sudo apt install build-essential
 sudo apt install clang clang-format clang-tidy
 sudo apt install vagrant 
 sudo apt install docker.io 
+sudo apt install virtualbox-qt
 
 pip3 install --user --upgrade neovim
 

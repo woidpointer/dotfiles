@@ -61,7 +61,14 @@ syntax on
 
 " set 256 color mode
 set t_Co=256
-color zenburn
+
+" try-catch block around the color selection because the first time the 
+" zenburn color is not available because it is installed by plug
+try
+  color zenburn
+catch
+  color desert
+endtry
 
 set ruler
 set number
