@@ -30,6 +30,8 @@ pip3 install --user --upgrade neovim
 # set python 3 as default
 echo -e '# @@@woidpointer:' >> ~/.bashrc 
 echo -e 'alias python=python3\n' >> ~/.bashrc 
+# Configure FZF behaviour
+echo -e 'FZF_DEFAULT_OPTS=--height 50% --layout=reverse --border  --preview="head -$LINES {}"'
 
 # source new bashrc file to activate the python alias
 source ~/.bashrc
@@ -50,13 +52,18 @@ mkdir ~/.config
 ln -s ~/.dotfiles/nvim/ ~/.config/nvim
 
 # now install nvim plugins
-# -s: silent => don't open the screen
 # +PlugInstall: execute PlugInstall command
 # +qall: Quit and exit 
-#nvim -s +PlugInstall +qall
+nvim  +PlugInstall +qall --headless
 
 ################################################################################
 # Tmux
 ################################################################################
 ln -s ~/.dotfiles/tmux/tmux.conf ~/.tmux.conf
 
+
+
+
+################################################################################
+# EOF
+################################################################################

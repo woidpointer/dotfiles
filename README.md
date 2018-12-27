@@ -7,6 +7,10 @@ These are my dotfiles for to setup an working environment for
 * Ruby/Python scripting
 
 
+Important requirements for the tool setup:
+* key bindings as much as possible to the default bindings.
+* highly automated setup.
+
 ## Base software packages
 
 ```bash
@@ -33,6 +37,11 @@ pip3 install --user --upgrade neovim
 
 # Fzf
 
+The fzf is a fuzzy search tool which works basically like the google search 
+when  you type in chars and a good proposal of your search intent is provided.
+
+The tool is automatically installed, when the base/base_package.sh is executed
+as part of the nvim plugin installation.
 
 # Tmux
 
