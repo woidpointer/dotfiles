@@ -103,6 +103,8 @@ let g:ycm_collect_identifiers_from_tags_files = 1
 set tags+=./.tags
 "let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
+" Don't use clangd
+let g:ycm_use_clangd = 1
 
 " NERDTREE 
 map <C-n> :NERDTreeToggle<CR>
