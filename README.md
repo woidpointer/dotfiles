@@ -1,6 +1,6 @@
 # Introduction
 
-- [ ] starship
+- [x] starship
 - [ ] Background
 - [ ] Hyprland
 - [ ] Waybar
