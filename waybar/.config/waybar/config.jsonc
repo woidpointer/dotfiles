@@ -2,8 +2,16 @@
   "position": "top",
   "modules-center": ["hyprland/workspaces"],
   "modules-left": ["hyprland/window"],
-  "modules-right": ["network", "pulseaudio", "battery", "cpu", "memory", "clock",
-        "custom/power" ],
+  "modules-right": [
+    "network",
+    "pulseaudio",
+    "battery",
+    "disk",
+    "cpu",
+    "memory",
+    "clock",
+    "custom/power"
+  ],
   "clock": {
     "format": "<span foreground='#f5c2e7'>   </span>{:%a %d %H:%M}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
@@ -61,8 +69,13 @@
     "menu": "on-click",
     "menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
     "menu-actions": {
-      "shutdown": "shutdown",
+      "shutdown": "shutdown -h now",
       "reboot": "reboot",
     }
+  },
+  "disk": {
+      "interval": 30,
+      "format": "󰨣 {percentage_used}%",
+      "unit": "GB"
   }
 }
