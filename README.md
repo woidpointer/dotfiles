@@ -1,11 +1,5 @@
 # Introduction
 
-- [x] starship
-- [x] Background
-- [x] Hyprland
-- [x] Waybar
-- [ ] Tmux
-
 ## Install
 
 ```shell
@@ -23,6 +17,18 @@ sudo pacman -S hyprpaper
 yay -S hyprshot
 sudo pacman -S waybar
 sudo pacman -S wofi
+sudo pacman -S cargo
+sudo pacman -S lazygit
+
+
+
+# install nvim
+# archlinux:
+sudo pacman -S lazygit
+
+# ubuntu build from source
+#...
+nvim --headless "+Lazy! sync | MasonToolsInstallSync" +qa
 
 
 # Setup tmux plugin manager
