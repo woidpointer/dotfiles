@@ -62,3 +62,6 @@ map(
   "mzJ`z",
   { desc = "Keep the cursor at line start when executing the 'J' command" }
 )
+
+vim.keymap.set('n', '<Esc>', '<Esc>:noh<CR>', { silent = true })
+
