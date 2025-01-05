@@ -2,6 +2,9 @@
 
 ## Install
 
+> **NOTE:**
+> This chapter is still in progress!
+
 ```shell
 # necessary packages
 sudo pacman -S neovim npm ruby rake
