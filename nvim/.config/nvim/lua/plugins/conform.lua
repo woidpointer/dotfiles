@@ -18,6 +18,7 @@ return {
           json = { "prettier" },
           yaml = { "prettier" },
           markdown = { "prettier" },
+          ruby = { "rubocop" },
         },
         format_on_save = {
           -- These options will be passed to conform.format()
