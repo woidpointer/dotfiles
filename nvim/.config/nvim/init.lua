@@ -5,7 +5,7 @@ require("config.keymaps")
 vim.opt.guicursor = ""
 vim.opt.relativenumber = true
 vim.opt.ruler = true
--- vim.opt.conceallevel = 3
+vim.opt.conceallevel = 1
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- highlight search
