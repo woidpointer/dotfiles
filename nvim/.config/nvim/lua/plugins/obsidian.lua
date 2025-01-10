@@ -25,6 +25,8 @@ return {
       { "<leader>ob", "<cmd>ObsidianBacklinks<cr>", desc = "Show location list of backlinks", mode = "n" },
       { "<leader>ot", "<cmd>ObsidianTemplate<cr>", desc = "Follow link under cursor", mode = "n" },
       { "<leader>op", "<cmd>ObsidianPasteImg<cr>", desc = "Paste imate from clipboard under cursor", mode = "n" },
+      { "<leader>ok", ":!mv '%:p' ~/.vaults/geistesblitze/zettelkasten<cr>:bd<cr>", desc = "[O]bsidian O[K]", mode = "n" },
+      { "<leader>odd", ":!rm '%:p'<cr>:bd<cr>", desc = "[O]bsidian [d]elete", mode = "n" },
     },
     opts = {
       workspaces = {

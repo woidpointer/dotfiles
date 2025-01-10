@@ -46,11 +46,11 @@ vim.keymap.set("n", "-", function()
   })
 
   -- Change the current working directory to the file's location
-  if vim.fn.isdirectory(reveal_file) == 1 then
-    vim.cmd("cd " .. reveal_file)
-  else
-    vim.cmd("cd " .. vim.fn.fnamemodify(reveal_file, ":h"))
-  end
+  -- if vim.fn.isdirectory(reveal_file) == 1 then
+  --   vim.cmd("cd " .. reveal_file)
+  -- else
+  --   vim.cmd("cd " .. vim.fn.fnamemodify(reveal_file, ":h"))
+  -- end
 end, { desc = "Open nvim-tree at current file or working directory" })
 
 -- Close current buffer
@@ -63,5 +63,6 @@ map(
   { desc = "Keep the cursor at line start when executing the 'J' command" }
 )
 
-vim.keymap.set('n', '<Esc>', '<Esc>:noh<CR>', { silent = true })
+map('n', '<Esc>', '<Esc>:noh<CR>', { silent = true })
+
 
