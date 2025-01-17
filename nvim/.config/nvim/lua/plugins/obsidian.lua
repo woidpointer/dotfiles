@@ -34,6 +34,10 @@ return {
           name = "notes",
           path = "~/.vaults/geistesblitze",
         },
+        {
+          name = "work",
+          path = "~/.vaults/work",
+        },
       },
       notes_subdir = "notes",
 
