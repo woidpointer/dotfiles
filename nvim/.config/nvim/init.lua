@@ -72,9 +72,9 @@ vim.opt.clipboard = "unnamedplus"
 vim.o.termguicolors = true
 
 vim.opt.fillchars:append({
-  vert = "▕", -- Vertical separator
-  fold = "·", -- Fold column filler
-  diff = "╱", -- Diff filler
+	vert = "▕", -- Vertical separator
+	fold = "·", -- Fold column filler
+	diff = "╱", -- Diff filler
 })
 
 vim.o.timeoutlen = 500
