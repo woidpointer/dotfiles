@@ -27,6 +27,8 @@ end, { desc = "Open neo-tree at current file or working directory" })
 
 -- nvim-tree
 -- TODO: Move this to nvim-ree plugin configuration file
+--
+--[[
 vim.keymap.set("n", "-", function()
   local reveal_file = vim.fn.expand("%:p")
   if reveal_file == "" then
@@ -52,17 +54,11 @@ vim.keymap.set("n", "-", function()
   --   vim.cmd("cd " .. vim.fn.fnamemodify(reveal_file, ":h"))
   -- end
 end, { desc = "Open nvim-tree at current file or working directory" })
+--]]
 
 -- Close current buffer
 map("n", "<leader>x", ":bd<CR>", { noremap = true, silent = true })
 
-map(
-  "n",
-  "J",
-  "mzJ`z",
-  { desc = "Keep the cursor at line start when executing the 'J' command" }
-)
+map("n", "J", "mzJ`z", { desc = "Keep the cursor at line start when executing the 'J' command" })
 
-map('n', '<Esc>', '<Esc>:noh<CR>', { silent = true })
-
-
+map("n", "<Esc>", "<Esc>:noh<CR>", { silent = true })
