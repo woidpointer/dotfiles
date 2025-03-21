@@ -36,6 +36,25 @@ return {
 					indent_markers = { enable = true },
 				},
 			})
+
+			vim.keymap.set("n", "<leader>loc", function()
+				local reveal_file = vim.fn.expand("%:p")
+				if reveal_file == "" then
+					reveal_file = vim.fn.getcwd()
+				else
+					local f = io.open(reveal_file, "r")
+					if f then
+						f:close()
+					else
+						reveal_file = vim.fn.getcwd()
+					end
+				end
+
+				require("nvim-tree.api").tree.open({
+					find_file = true, -- Opens the tree and focuses on the file
+					update_root = true, -- Updates the root directory to match the file's location
+				})
+			end, { desc = "Open nvim-tree at current file or working directory" })
 		end,
 	},
 }
