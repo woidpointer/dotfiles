@@ -2,7 +2,7 @@ return {
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
-		branch = "0.1.x",
+		branch = "master",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -109,7 +109,8 @@ return {
 		end,
 	},
 	{
-		"princejoogie/dir-telescope.nvim",
+		"nade4tt/dir-telescope.nvim",
+		branch = "fix/vim-validate-deprecation-warning",
 		-- telescope.nvim is a required dependency
 		requires = { "nvim-telescope/telescope.nvim" },
 		config = function()
