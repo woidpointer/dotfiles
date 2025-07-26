@@ -67,23 +67,33 @@ return {
 				local build_dir = cwd .. "/build"
 
 				local files = scandir.scan_dir(build_dir, {
-					depth = nil, -- recursiv: no limit
+					depth = nil, -- recursive: no limit
 					add_dirs = false,
 					hidden = false,
 					only_files = true,
 				})
 
-				--  filter out only executables
+				-- Filter only executables
 				local executables = vim.tbl_filter(function(path)
 					local stat = vim.loop.fs_stat(path)
 					return stat and stat.type == "file" and bit.band(stat.mode, 0x49) ~= 0
 				end, files)
 
-				-- use fzf-lua to search for the executable to debug
-				require("fzf-lua").fzf_exec(executables, {
+				local display_to_full = {}
+				local display_items = {}
+
+				for _, full_path in ipairs(executables) do
+					local rel_path = full_path:sub(#build_dir + 2) -- +2 für '/' nach build
+					display_to_full[rel_path] = full_path
+					table.insert(display_items, rel_path)
+				end
+
+				-- display FZF Picker with relative paths
+				require("fzf-lua").fzf_exec(display_items, {
 					prompt = "Executable > ",
 					previewer = function(item)
-						return string.format("file %s", vim.fn.shellescape(item))
+						local full_path = display_to_full[item]
+						return string.format("file %s", vim.fn.shellescape(full_path))
 					end,
 					fzf_opts = {
 						["--ansi"] = "",
@@ -92,7 +102,10 @@ return {
 					actions = {
 						["default"] = function(selected)
 							if selected and selected[1] then
-								callback(selected[1])
+								local full = display_to_full[selected[1]]
+								if full then
+									callback(full)
+								end
 							end
 						end,
 					},
@@ -117,7 +130,7 @@ return {
 						program = exec,
 						cwd = vim.fn.getcwd(),
 						stopOnEntry = false,
-						args = {},
+						args = { "--gtest_filter=Fixture.testcase" },
 					})
 				end)
 			end, { desc = "FZF Debug-Start" })
@@ -144,9 +157,6 @@ return {
 			vim.keymap.set("n", "<Leader>dc", function()
 				require("dap").run_to_cursor()
 			end)
-			vim.keymap.set("n", "<Leader>dr", function()
-				require("dap").repl.open()
-			end)
 			-- vim.keymap.set("n", "<Leader>dl", function()
 			--	require("dap").run_last()
 			-- end)
@@ -163,6 +173,10 @@ return {
 			vim.keymap.set("n", "<Leader>ds", function()
 				local widgets = require("dap.ui.widgets")
 				widgets.centered_float(widgets.scopes)
+			end)
+			vim.keymap.set("n", "<Leader>dt", function()
+				local widgets = require("dap.ui.widgets")
+				widgets.centered_float(widgets.threads)
 			end)
 		end,
 	},
