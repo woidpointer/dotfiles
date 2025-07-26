@@ -123,23 +123,60 @@ return {
 
 			vim.keymap.set("n", "<leader>dd", function()
 				select_executable_fzf(function(exec)
-					dap.run({
-						type = "cppdbg",
-						request = "launch",
-						name = "Debug with selected executable",
-						program = exec,
-						cwd = vim.fn.getcwd(),
-						stopOnEntry = false,
-						args = { "--gtest_filter=Fixture.testcase" },
-					})
-				end)
-			end, { desc = "FZF Debug-Start" })
+					-- check if binary is a gtest binary
+					local is_gtest = vim.fn.system({ exec, "--gtest_list_tests" })
+					if vim.v.shell_error == 0 and is_gtest ~= "" then
+						-- Tests parsen
+						local lines = vim.split(is_gtest, "\n", { trimempty = true })
+						local testcases = {}
+						local current_fixture = ""
 
-			-- applied vim moves for debugging
-			--   right => step into
-			--   left  => step out
-			--   down  => step over
-			--   up    => restart
+						for _, line in ipairs(lines) do
+							if not vim.startswith(line, "  ") then
+								-- Fixture
+								current_fixture = vim.trim(line)
+							else
+								-- Testcase
+								local testcase = vim.trim(line)
+								local full = current_fixture .. testcase
+								table.insert(testcases, full)
+							end
+						end
+
+						-- Picker testcase
+						require("fzf-lua").fzf_exec(testcases, {
+							prompt = "Select Testcase > ",
+							actions = {
+								["default"] = function(selected)
+									if selected and selected[1] then
+										local filter_arg = "--gtest_filter=" .. selected[1]
+										require("dap").run({
+											type = "cppdbg",
+											request = "launch",
+											name = "Debug (Google Test)",
+											program = exec,
+											cwd = vim.fn.getcwd(),
+											stopOnEntry = false,
+											args = { filter_arg },
+										})
+									end
+								end,
+							},
+						})
+					else
+						-- no gtest binary, execute without args
+						require("dap").run({
+							type = "cppdbg",
+							request = "launch",
+							name = "Debug (no filter)",
+							program = exec,
+							cwd = vim.fn.getcwd(),
+							stopOnEntry = false,
+							args = {},
+						})
+					end
+				end)
+			end, { desc = "FZF Debug with optional GTest support" })
 
 			vim.keymap.set("n", "<C-Right>", function()
 				require("dap").step_into()
