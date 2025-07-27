@@ -121,6 +121,20 @@ return {
 				require("dap").toggle_breakpoint()
 			end)
 
+			vim.keymap.set("n", "<leader>de", function()
+				select_executable_fzf(function(exec)
+					dap.run({
+						type = "cppdbg",
+						request = "launch",
+						name = "Debug with selected executable",
+						program = exec,
+						cwd = vim.fn.getcwd(),
+						stopOnEntry = false,
+						args = { "--gtest_filter=Fixture.testcase" },
+					})
+				end)
+			end, { desc = "Debug executable" })
+
 			vim.keymap.set("n", "<leader>dd", function()
 				select_executable_fzf(function(exec)
 					-- check if binary is a gtest binary
