@@ -8,6 +8,45 @@ return {
 		opts = {},
 		keys = {
 			{
+				"<leader>fi",
+				function()
+					local dirs = vim.fn.systemlist("fdfind --type d --max-depth 3")
+					vim.ui.select(dirs, {
+						prompt = "Select directory: ",
+					}, function(choice)
+						if choice then
+							require("fzf-lua").files({ cwd = choice })
+						end
+					end)
+				end,
+				desc = "Find files in interactive selected directory",
+			},
+			{
+				"<leader>fM",
+				function()
+					local dirs = vim.fn.systemlist("fdfind --type d ")
+
+					require("fzf-lua").fzf_exec(dirs, {
+						prompt = "Select directories (Tab=multi-select)> ",
+						fzf_opts = {
+							["--multi"] = "",
+							["--bind"] = "tab:toggle",
+						},
+						actions = {
+							["default"] = function(selected)
+								if selected and #selected > 0 then
+									local search_paths = table.concat(selected, " ")
+									require("fzf-lua").files({
+										cmd = "fdfind --type f . " .. search_paths,
+									})
+								end
+							end,
+						},
+					})
+				end,
+				desc = "Find files in multiple selected directories",
+			},
+			{
 				"<leader>ff",
 				function()
 					require("fzf-lua").git_files()
