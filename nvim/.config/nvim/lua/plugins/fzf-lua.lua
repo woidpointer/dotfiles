@@ -10,14 +10,7 @@ return {
 			{
 				"<leader>fi",
 				function()
-					local dirs = vim.fn.systemlist("fdfind --type d --max-depth 3")
-					vim.ui.select(dirs, {
-						prompt = "Select directory: ",
-					}, function(choice)
-						if choice then
-							require("fzf-lua").files({ cwd = choice })
-						end
-					end)
+					require("fzf-lua").files({ cwd = vim.fn.expand("%:p:h"), preview_opts = "down:50%" })
 				end,
 				desc = "Find files in interactive selected directory",
 			},
@@ -49,7 +42,14 @@ return {
 			{
 				"<leader>ff",
 				function()
-					require("fzf-lua").git_files()
+					require("fzf-lua").git_files({
+						winopts = {
+							preview = {
+								layout = "horizontal",
+								horizontal = "down:50%",
+							},
+						},
+					})
 				end,
 				desc = "Find git Files in project directory",
 			},
@@ -213,6 +213,20 @@ return {
 					require("fzf-lua").lsp_outgoing_calls()
 				end,
 				desc = "List Outgoing calls",
+			},
+			{
+				"<leader>co",
+				function()
+					require("fzf-lua").lsp_document_symbols({
+						winopts = {
+							preview = {
+								layout = "horizontal",
+								horizontal = "down:50%",
+							},
+						},
+					})
+				end,
+				desc = "[c]ode [s]symbols",
 			},
 		},
 		config = function()
