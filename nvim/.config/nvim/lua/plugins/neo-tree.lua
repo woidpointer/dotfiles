@@ -12,7 +12,6 @@ return {
 		keys = {
 			{ "<C-n>", "<cmd>Neotree toggle<cr>", desc = "Toggle Neotree view" },
 			{ "<C-s>", "<cmd>Neotree toggle buffers<cr>", desc = "Toggle Neotree buffers" },
-			{ "<Tab>n", "<cmd>Neotree toggle git_status<cr>", desc = "Toggle Neotree git status" },
 		},
 		config = function()
 			require("neo-tree").setup({
