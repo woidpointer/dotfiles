@@ -57,6 +57,35 @@ return {
 			local dap = require("dap")
 			local fzf = require("fzf-lua")
 
+			-- Function zum Starten des Debuggers mit launch.json
+			local function start_debugging_with_launch_json()
+				local launch_json = vim.fn.getcwd() .. "/.vscode/launch.json"
+				if vim.fn.filereadable(launch_json) == 1 then
+					-- Lade launch.json neu (falls geändert)
+					require("dap.ext.vscode").load_launchjs(nil, {
+						node = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+						python = { "python" },
+						-- cpp = { "c", "cpp" },
+						rust = { "rust" },
+						go = { "go" },
+						java = { "java" },
+						cs = { "cs" },
+						php = { "php" },
+						cppdbg = { "c", "cpp" },
+					})
+
+					-- Starte Debugging
+					dap.continue()
+					print("Debug gestartet mit launch.json")
+				else
+					print("Keine .vscode/launch.json gefunden!")
+					-- Optional: Fallback zu deiner bestehenden Funktionalität
+					print("Verwende <leader>dd für FZF Debug oder erstelle eine launch.json")
+				end
+			end
+
+			vim.keymap.set("n", "<leader>dv", start_debugging_with_launch_json, { desc = "Debug with launch.json" })
+
 			-- function to search executable within the build directory and lets the
 			-- user fuzzy search on that list
 			local function select_executable_fzf(callback)
