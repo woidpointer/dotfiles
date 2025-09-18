@@ -112,7 +112,6 @@ return {
 						["A"] = "add_directory",
 						["d"] = "delete",
 						["r"] = "rename",
-						["y"] = "copy_to_clipboard",
 						["x"] = "cut_to_clipboard",
 						["p"] = "paste_from_clipboard",
 						["c"] = "copy",
@@ -122,6 +121,23 @@ return {
 						["?"] = "show_help",
 						["<"] = "prev_source",
 						[">"] = "next_source",
+						["yf"] = function(state) -- filename only
+							local node = state.tree:get_node()
+							local filename = vim.fn.fnamemodify(node.path, ":t")
+							vim.fn.setreg("+", filename)
+							print("Copied filename: " .. filename)
+						end,
+						["ya"] = function(state) -- absolute path
+							local node = state.tree:get_node()
+							vim.fn.setreg("+", node.path)
+							print("Copied absolute path: " .. node.path)
+						end,
+						["yr"] = function(state)
+							local node = state.tree:get_node()
+							local relative_path = vim.fn.fnamemodify(node.path, ":~:.")
+							vim.fn.setreg("+", relative_path)
+							print("Copied: " .. relative_path)
+						end,
 					},
 				},
 				nesting_rules = {},
