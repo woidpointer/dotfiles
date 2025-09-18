@@ -11,7 +11,7 @@ return {
 		enabled = true,
 		keys = {
 			{ "<C-n>", "<cmd>Neotree toggle<cr>", desc = "Toggle Neotree view" },
-			{ "<S-n>", "<cmd>Neotree toggle buffers<cr>", desc = "Toggle Neotree buffers" },
+			{ "<C-s>", "<cmd>Neotree toggle buffers<cr>", desc = "Toggle Neotree buffers" },
 			{ "<Tab>n", "<cmd>Neotree toggle git_status<cr>", desc = "Toggle Neotree git status" },
 		},
 		config = function()
@@ -94,7 +94,7 @@ return {
 					mappings = {
 						["<space>"] = "toggle_node",
 						["<cr>"] = "open",
-						["<esc>"] = "revert_preview",
+						["<esc>"] = "close_window",
 						["P"] = { "toggle_preview", config = { use_float = true } },
 						["l"] = "focus_preview",
 						["S"] = "open_split",
