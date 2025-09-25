@@ -18,7 +18,7 @@ return {
 				close_if_last_window = false,
 				popup_border_style = "rounded",
 				enable_git_status = true,
-				enable_diagnostics = true,
+				enable_diagnostics = false,
 				sort_case_insensitive = false,
 				event_handlers = {
 					{
@@ -82,8 +82,8 @@ return {
 					popup = {
 						position = "50%", -- Center both horizontally and vertically
 						size = {
-							width = "80%", -- Updated to 80% width
-							height = "90%", -- Updated to 90% height
+							width = "60%", -- Updated to 80% width
+							height = "60%", -- Updated to 90% height
 						},
 					},
 					mapping_options = {
@@ -120,23 +120,32 @@ return {
 						["?"] = "show_help",
 						["<"] = "prev_source",
 						[">"] = "next_source",
-						["yf"] = function(state) -- filename only
-							local node = state.tree:get_node()
-							local filename = vim.fn.fnamemodify(node.path, ":t")
-							vim.fn.setreg("+", filename)
-							print("Copied filename: " .. filename)
-						end,
-						["ya"] = function(state) -- absolute path
-							local node = state.tree:get_node()
-							vim.fn.setreg("+", node.path)
-							print("Copied absolute path: " .. node.path)
-						end,
-						["yr"] = function(state)
-							local node = state.tree:get_node()
-							local relative_path = vim.fn.fnamemodify(node.path, ":~:.")
-							vim.fn.setreg("+", relative_path)
-							print("Copied: " .. relative_path)
-						end,
+						["yf"] = {
+							function(state) -- filename only
+								local node = state.tree:get_node()
+								local filename = vim.fn.fnamemodify(node.path, ":t")
+								vim.fn.setreg("+", filename)
+								print("Copied filename: " .. filename)
+							end,
+							desc = "Copy filename to clipboard",
+						},
+						["ya"] = {
+							function(state) -- absolute path
+								local node = state.tree:get_node()
+								vim.fn.setreg("+", node.path)
+								print("Copied absolute path: " .. node.path)
+							end,
+							desc = "Copy absolute filename to clipboard",
+						},
+						["yr"] = {
+							function(state)
+								local node = state.tree:get_node()
+								local relative_path = vim.fn.fnamemodify(node.path, ":~:.")
+								vim.fn.setreg("+", relative_path)
+								print("Copied: " .. relative_path)
+							end,
+							desc = "Copy relative filename to clipboard",
+						},
 					},
 				},
 				nesting_rules = {},
