@@ -1,7 +1,7 @@
 return {
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
-		enabled = true,
+		enabled = false,
 		branch = "main",
 		dependencies = {
 			{ "nvim-lua/plenary.nvim" },
