@@ -1,3 +1,7 @@
+if vim.env.OPENAI_API_KEY == nil or vim.env.OPENAI_API_KEY == "" then
+	return {}
+end
+
 return {
 	{
 		"jackMort/ChatGPT.nvim",

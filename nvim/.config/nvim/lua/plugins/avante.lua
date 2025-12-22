@@ -1,3 +1,7 @@
+if vim.env.COPILOT_SUPPORTED == nil or vim.env.COPILOT_SUPPORTED == "" then
+	return {}
+end
+
 return {
 	{
 		"yetone/avante.nvim",

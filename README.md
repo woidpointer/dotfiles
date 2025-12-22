@@ -17,7 +17,7 @@ sudo pacman -S hyperland
 sudo pacman -S swaync
 sudo pacman -S hypridle
 sudo pacman -S hyprpaper
-yay -S hyprshot
+sudo pacman -S hyprshot
 sudo pacman -S waybar
 sudo pacman -S wofi
 sudo pacman -S cargo

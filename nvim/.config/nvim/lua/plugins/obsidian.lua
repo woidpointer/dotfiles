@@ -27,8 +27,8 @@ else
 	print("personal")
 	-- If the environment variable is NOT set, prioritize the "personal" vault.
 	final_workspaces_list = {
-		all_workspaces[1], -- "work"
-		all_workspaces[2], -- "personal"
+		all_workspaces[1], -- "personal"
+		all_workspaces[2], -- "work"
 	}
 end
 
