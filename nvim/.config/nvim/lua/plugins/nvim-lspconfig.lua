@@ -13,7 +13,10 @@ return {
 		},
 
 		config = function()
-			require("lspconfig").lua_ls.setup({
+			-- Use the new vim.lsp.config API (Neovim 0.11+)
+			vim.lsp.config.lua_ls = {
+				cmd = { "lua-language-server" },
+				root_markers = { ".luarc.json", ".git" },
 				settings = {
 					Lua = {
 						diagnostics = {
@@ -25,7 +28,10 @@ return {
 						},
 					},
 				},
-			})
+			}
+
+			-- Enable the LSP
+			vim.lsp.enable("lua_ls")
 
 			-- Brief aside: **What is LSP?**
 			--
