@@ -8,7 +8,7 @@ return {
 			"MunifTanjim/nui.nvim",
 		},
 		cmd = { "Neotree" },
-		enabled = true,
+		enabled = false,
 		keys = {
 			{ "<C-n>", "<cmd>Neotree toggle<cr>", desc = "Toggle Neotree view" },
 			{ "<C-s>", "<cmd>Neotree toggle buffers<cr>", desc = "Toggle Neotree buffers" },
