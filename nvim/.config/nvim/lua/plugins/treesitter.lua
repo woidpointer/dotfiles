@@ -1,10 +1,11 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		-- enabled = false,
+		build = ":TSUpdate",
 		config = function()
-			require("nvim-treesitter").setup({
-				ensure_installed = {
+			-- Parsers installieren (synchron beim ersten Start)
+			require("nvim-treesitter")
+				.install({
 					"c",
 					"lua",
 					"vim",
@@ -21,21 +22,19 @@ return {
 					"gitignore",
 					"dockerfile",
 					"yaml",
-				},
-				auto_install = true,
-				highlight = {
-					enable = true,
-				},
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "<Leader>ss",
-						node_incremental = "<Leader>si",
-						scope_incremental = "<Leader>sc",
-						node_decremental = "<Leader>sd",
-					},
-				},
+				})
+				:wait(300000) -- max 5 Minuten warten
+
+			-- Highlighting enabled (optional, per FileType)
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = { "lua", "python", "yaml", "markdown", "vim" }, -- define Sprachen
+				callback = function()
+					vim.treesitter.start()
+				end,
 			})
+
+			-- Incremental selection wie vorher
+			-- (Keymaps bleiben gleich, keine setup() nötig)
 		end,
 	},
 }

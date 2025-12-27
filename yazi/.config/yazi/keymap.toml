@@ -1,19 +1,19 @@
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "c", "p" ]
 run = "copy path"
 desc = "copy absolute path"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "c", "d" ]
 run = "copy dirname"
 desc = "copy directory name"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "c", "f" ]
 run = "copy filename"
 desc = "copy filename"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "c", "n" ]
 run = "copy name_without_ext"
 desc = "copy filename without extension"
