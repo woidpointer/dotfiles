@@ -36,7 +36,8 @@ return {
 	{
 		"epwalsh/obsidian.nvim",
 		version = "*", -- recommended, use latest release instead of latest commit
-		lazy = false,
+		lazy = true,
+		event = "VeryLazy",
 		ft = "markdown",
 		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
 		-- event = {
@@ -46,19 +47,6 @@ return {
 		--   "BufReadPre path/to/my-vault/*.md",
 		--   "BufNewFile path/to/my-vault/*.md",
 		-- },
-
-		-- cond will be evaluated when plugin is loaded
-		cond = function()
-			-- Check if at least one vault exists
-			for _, workspace in ipairs(all_workspaces) do
-				local path = vim.fn.expand(workspace.path)
-				if vim.fn.isdirectory(path) == 1 then
-					return true
-				end
-			end
-			return false
-		end,
-
 		dependencies = {
 			-- Required.
 			"nvim-lua/plenary.nvim",
