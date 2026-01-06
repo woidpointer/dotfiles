@@ -1,7 +1,7 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
+		build = ":TSUpdateSync",
 		config = function()
 			-- Parsers installieren (synchron beim ersten Start)
 			require("nvim-treesitter")
