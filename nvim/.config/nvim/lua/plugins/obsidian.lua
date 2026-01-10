@@ -9,25 +9,18 @@ local all_workspaces = {
 	},
 }
 
--- Check the environment variable is set in the work environment
 local work_mode = os.getenv("WORK_MODE")
-
--- Set the order of workspaces depending on the flag above. The first
--- position in that list is always the default
 local final_workspaces_list
 if work_mode then
 	print("Workmode")
-	-- If the environment variable is set, prioritize the "work" vault.
-	-- The plugin uses the *first* matching path in the list.
 	final_workspaces_list = {
-		all_workspaces[2], -- "personal"
-		all_workspaces[1], -- "work"
+		all_workspaces[2], -- "work"
+		all_workspaces[1], -- "notes"
 	}
 else
 	print("personal")
-	-- If the environment variable is NOT set, prioritize the "personal" vault.
 	final_workspaces_list = {
-		all_workspaces[1], -- "personal"
+		all_workspaces[1], -- "notes"
 		all_workspaces[2], -- "work"
 	}
 end
@@ -35,26 +28,50 @@ end
 return {
 	{
 		"obsidian-nvim/obsidian.nvim",
-		version = "*", -- recommended, use latest release instead of latest commit
+		version = "*",
 		lazy = true,
 		event = "VeryLazy",
 		ft = "markdown",
-		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-		-- event = {
-		--   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-		--   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-		--   -- refer to `:h file-pattern` for more examples
-		--   "BufReadPre path/to/my-vault/*.md",
-		--   "BufNewFile path/to/my-vault/*.md",
-		-- },
-		dependencies = {
-			-- Required.
-			"nvim-lua/plenary.nvim",
-
-			-- see below for full list of optional dependencies 👇
-		},
 		keys = {
-			{ "<leader>on", "<cmd>Obsidian new<cr>", desc = "New Obsidian note", mode = "n" },
+			{
+				"<leader>on",
+				function()
+					vim.ui.input({ prompt = "Note title: " }, function(title)
+						if title then
+							vim.cmd("Obsidian new_from_template " .. title .. " permanent-note")
+						end
+					end)
+				end,
+				desc = "New Obsidian note from template",
+				mode = "n",
+			},
+			{
+				"<leader>oN",
+				function()
+					vim.ui.input({ prompt = "Permanent note title: " }, function(title)
+						if title then
+							-- Erstelle Note erst mal normal
+							vim.cmd("Obsidian new_from_template " .. title .. " permanent-note")
+							-- Verschiebe sie nach zettelkasten
+							vim.defer_fn(function()
+								local current_file = vim.api.nvim_buf_get_name(0)
+								if current_file and current_file ~= "" then
+									local filename = vim.fn.fnamemodify(current_file, ":t")
+									local vault_dir = vim.fn.fnamemodify(current_file, ":h:h")
+									local new_path = vault_dir .. "/zettelkasten/" .. filename
+									-- Stelle sicher dass der zettelkasten Order existiert
+									vim.fn.mkdir(vault_dir .. "/zettelkasten", "p")
+									vim.cmd("write")
+									vim.cmd("silent !mv '" .. current_file .. "' '" .. new_path .. "'")
+									vim.cmd("edit " .. new_path)
+								end
+							end, 100)
+						end
+					end)
+				end,
+				desc = "New permanent note in zettelkasten",
+				mode = "n",
+			},
 			{ "<leader>oo", "<cmd>Obsidian search<cr>", desc = "Search Obsidian notes", mode = "n" },
 			{ "<leader>os", "<cmd>Obsidian quick_switch<cr>", desc = "Quick Switch", mode = "n" },
 			{ "<leader>ob", "<cmd>Obsidian backlinks<cr>", desc = "Show backlinks", mode = "n" },
@@ -68,20 +85,42 @@ return {
 			},
 			{ "<leader>odd", ":!rm '%:p'<cr>:bd<cr>", desc = "[O]bsidian [d]elete", mode = "n" },
 		},
-		---@module 'obsidian'
-		---@type obsidian.config
 		opts = {
 			legacy_commands = false,
 			workspaces = final_workspaces_list,
 			notes_subdir = "notes",
-
+			new_notes_location = "notes_subdir",
 			templates = {
 				folder = "_templates",
 				date_format = "%Y-%m-%d",
 				time_format = "%H:%M",
+				-- Füge custom substitutions hinzu
+				substitutions = {
+					-- {{title}} wird durch den Original-Titel ersetzt (nicht kebab-case)
+					title = function()
+						return vim.g.obsidian_note_title or "Untitled"
+					end,
+				},
 			},
+			note_id_func = function(title)
+				-- Speichere den Original-Titel in einer globalen Variable
+				vim.g.obsidian_note_title = title
 
+				if title ~= nil and title ~= "" then
+					-- Konvertiere Title in kebab-case für den Dateinamen
+					return title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+				else
+					-- Falls kein Title: Timestamp + 4-stellige Zufallszahl
+					vim.g.obsidian_note_title = nil
+					local suffix = ""
+					for _ = 1, 4 do
+						suffix = suffix .. tostring(math.random(0, 9))
+					end
+					return tostring(os.time()) .. "-" .. suffix
+				end
+			end,
 			frontmatter = {
+				enabled = true,
 				func = function(note)
 					local out = {
 						id = note.id,
@@ -89,36 +128,14 @@ return {
 						tags = note.tags,
 						created = os.date("%Y-%m-%d %H:%M"),
 					}
-
 					if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
 						for k, v in pairs(note.metadata) do
 							out[k] = v
 						end
 					end
-
 					return out
 				end,
 			},
-
-			-- see below for full list of options 👇
-			--
-			note_id_func = function(title)
-				-- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-				-- In this case a note with the title 'My new note' will be given an ID that looks
-				-- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
-				local suffix = ""
-				if title ~= nil then
-					-- If title is given, transform it into valid file name.
-					suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-				else
-					-- If title is nil, just add 4 random uppercase letters to the suffix.
-					for _ = 1, 4 do
-						suffix = suffix .. string.char(math.random(65, 90))
-					end
-				end
-				return tostring(os.time()) .. "-" .. suffix
-			end,
-
 			completion = {
 				nvim_cmp = false,
 				blink = true,
