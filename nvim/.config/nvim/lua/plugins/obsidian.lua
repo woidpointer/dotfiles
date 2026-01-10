@@ -34,7 +34,7 @@ end
 
 return {
 	{
-		"epwalsh/obsidian.nvim",
+		"obsidian-nvim/obsidian.nvim",
 		version = "*", -- recommended, use latest release instead of latest commit
 		lazy = true,
 		event = "VeryLazy",
@@ -54,12 +54,12 @@ return {
 			-- see below for full list of optional dependencies 👇
 		},
 		keys = {
-			{ "<leader>on", "<cmd>ObsidianNew<cr>", desc = "New Obsidian note", mode = "n" },
-			{ "<leader>oo", "<cmd>ObsidianSearch<cr>", desc = "Search Obsidian notes", mode = "n" },
-			{ "<leader>os", "<cmd>ObsidianQuickSwitch<cr>", desc = "Quick Switch", mode = "n" },
-			{ "<leader>ob", "<cmd>ObsidianBacklinks<cr>", desc = "Show location list of backlinks", mode = "n" },
-			{ "<leader>ot", "<cmd>ObsidianTemplate<cr>", desc = "Follow link under cursor", mode = "n" },
-			{ "<leader>op", "<cmd>ObsidianPasteImg<cr>", desc = "Paste imate from clipboard under cursor", mode = "n" },
+			{ "<leader>on", "<cmd>Obsidian new<cr>", desc = "New Obsidian note", mode = "n" },
+			{ "<leader>oo", "<cmd>Obsidian search<cr>", desc = "Search Obsidian notes", mode = "n" },
+			{ "<leader>os", "<cmd>Obsidian quick_switch<cr>", desc = "Quick Switch", mode = "n" },
+			{ "<leader>ob", "<cmd>Obsidian backlinks<cr>", desc = "Show backlinks", mode = "n" },
+			{ "<leader>ot", "<cmd>Obsidian template<cr>", desc = "Insert template", mode = "n" },
+			{ "<leader>op", "<cmd>Obsidian paste_img<cr>", desc = "Paste image from clipboard", mode = "n" },
 			{
 				"<leader>ok",
 				":!mv '%:p' ~/.vaults/geistesblitze/zettelkasten<cr>:bd<cr>",
@@ -68,9 +68,37 @@ return {
 			},
 			{ "<leader>odd", ":!rm '%:p'<cr>:bd<cr>", desc = "[O]bsidian [d]elete", mode = "n" },
 		},
+		---@module 'obsidian'
+		---@type obsidian.config
 		opts = {
+			legacy_commands = false,
 			workspaces = final_workspaces_list,
 			notes_subdir = "notes",
+
+			templates = {
+				folder = "_templates",
+				date_format = "%Y-%m-%d",
+				time_format = "%H:%M",
+			},
+
+			frontmatter = {
+				func = function(note)
+					local out = {
+						id = note.id,
+						aliases = note.aliases,
+						tags = note.tags,
+						created = os.date("%Y-%m-%d %H:%M"),
+					}
+
+					if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
+						for k, v in pairs(note.metadata) do
+							out[k] = v
+						end
+					end
+
+					return out
+				end,
+			},
 
 			-- see below for full list of options 👇
 			--
@@ -90,6 +118,15 @@ return {
 				end
 				return tostring(os.time()) .. "-" .. suffix
 			end,
+
+			completion = {
+				nvim_cmp = false,
+				blink = true,
+				min_chars = 0,
+			},
+			picker = {
+				name = "fzf-lua",
+			},
 		},
 	},
 }
