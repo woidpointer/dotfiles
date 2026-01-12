@@ -49,24 +49,17 @@ return {
 				"<leader>oN",
 				function()
 					vim.ui.input({ prompt = "Permanent note title: " }, function(title)
-						if title then
-							-- Erstelle Note erst mal normal
-							vim.cmd("Obsidian new_from_template " .. title .. " permanent-note")
-							-- Verschiebe sie nach zettelkasten
-							vim.defer_fn(function()
-								local current_file = vim.api.nvim_buf_get_name(0)
-								if current_file and current_file ~= "" then
-									local filename = vim.fn.fnamemodify(current_file, ":t")
-									local vault_dir = vim.fn.fnamemodify(current_file, ":h:h")
-									local new_path = vault_dir .. "/zettelkasten/" .. filename
-									-- Stelle sicher dass der zettelkasten Order existiert
-									vim.fn.mkdir(vault_dir .. "/zettelkasten", "p")
-									vim.cmd("write")
-									vim.cmd("silent !mv '" .. current_file .. "' '" .. new_path .. "'")
-									vim.cmd("edit " .. new_path)
-								end
-							end, 100)
+						if not title or title == "" then
+							return
 						end
+
+						-- Pfad relative zum Vault
+						local rel_path = "zettelkasten/" .. title
+
+						-- fnameescape statt shellescape!
+						local escaped_path = vim.fn.fnameescape(rel_path)
+
+						vim.cmd("Obsidian new_from_template " .. escaped_path .. " permanent-note")
 					end)
 				end,
 				desc = "New permanent note in zettelkasten",
@@ -86,6 +79,9 @@ return {
 			{ "<leader>odd", ":!rm '%:p'<cr>:bd<cr>", desc = "[O]bsidian [d]elete", mode = "n" },
 		},
 		opts = {
+			ui = {
+				enable = false,
+			},
 			legacy_commands = false,
 			workspaces = final_workspaces_list,
 			notes_subdir = "notes",
