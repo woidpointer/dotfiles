@@ -11,6 +11,7 @@ return {
 				preview = {
 					filetypes = { "markdown", "codecompanion" },
 					ignore_buftypes = {},
+					enable = false, -- disable preview as default
 				},
 			},
 		},
