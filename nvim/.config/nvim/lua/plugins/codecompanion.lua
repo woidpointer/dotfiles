@@ -1,5 +1,8 @@
 return {
 	"olimorris/codecompanion.nvim",
+	keys = {
+		{ "<leader>ct", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle CodeCompanion Chat", mode = "n" },
+	},
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"nvim-treesitter/nvim-treesitter",
@@ -11,7 +14,7 @@ return {
 				preview = {
 					filetypes = { "markdown", "codecompanion" },
 					ignore_buftypes = {},
-					enable = false, -- disable preview as default
+					enable = true, -- disable preview as default
 				},
 			},
 		},
@@ -32,19 +35,19 @@ return {
 		interactions = {
 			chat = {
 				adapter = "ollama",
-				model = "gpt-oss:20b",
+				model = "gpt-oss:20b-32k:latest",
 			},
 			inline = {
 				adapter = "ollama",
-				model = "gpt-oss:20b",
+				model = "gpt-oss:20b-32k:latest",
 			},
 			cmd = {
 				adapter = "ollama",
-				model = "gpt-oss:20b",
+				model = "gpt-oss:20b-32k:latest",
 			},
 			agent = {
 				adapter = "ollama",
-				model = "gpt-oss:20b",
+				model = "gpt-oss:20b-32k:latest",
 			},
 		},
 
@@ -54,7 +57,7 @@ return {
 					return require("codecompanion.adapters").extend("ollama", {
 						schema = {
 							model = {
-								default = "gpt-oss:20b",
+								default = "gpt-oss-20b-32k:latest",
 							},
 							num_ctx = {
 								default = 16384,
@@ -74,10 +77,22 @@ return {
 			},
 			chat = {
 				window = {
-					layout = "vertical",
-					width = 0.45,
-					height = 0.8,
+					layout = "float",
+
+					-- Float-spezifische Optionen
+					relative = "win", --"editor", -- oder "cursor", "win"
+					width = 0.8, -- 80% der Editor-Breite
+					height = 0.8, -- 80% der Editor-Höhe
+
+					-- Position
+					row = 2, -- Vertikaler Offset
+					col = 2, -- Horizontaler Offset
+
+					-- Styling
+					border = "rounded", -- "single", "double", "rounded", "solid", "shadow"
+					zindex = 50, -- Layer-Priorität
 				},
+
 				show_settings = false,
 			},
 		},
