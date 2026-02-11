@@ -32,21 +32,22 @@ return {
 		},
 	},
 	opts = {
+		-- Switch between "ollama" and "copilot" by changing this variable
 		interactions = {
 			chat = {
-				adapter = "ollama",
+				adapter = "copilot_v", -- Change to "copilot" to use Copilot
 				model = "gpt-oss:20b-32k:latest",
 			},
 			inline = {
-				adapter = "ollama",
+				adapter = "copilot_v", -- Change to "copilot" to use Copilot
 				model = "gpt-oss:20b-32k:latest",
 			},
 			cmd = {
-				adapter = "ollama",
+				adapter = "copilot_v", -- Change to "copilot" to use Copilot
 				model = "gpt-oss:20b-32k:latest",
 			},
 			agent = {
-				adapter = "ollama",
+				adapter = "copilot_v", -- Change to "copilot" to use Copilot
 				model = "gpt-oss:20b-32k:latest",
 			},
 		},
@@ -61,6 +62,18 @@ return {
 							},
 							num_ctx = {
 								default = 16384,
+							},
+							temperature = {
+								default = 0.1,
+							},
+						},
+					})
+				end,
+				copilot_v = function()
+					return require("codecompanion.adapters").extend("copilot", {
+						schema = {
+							model = {
+								default = "claude-sonnet-4.5",
 							},
 							temperature = {
 								default = 0.1,
