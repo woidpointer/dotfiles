@@ -5,6 +5,8 @@ end
 return {
 	{
 		"yetone/avante.nvim",
+
+		enabled = true,
 		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
 		-- ⚠️ must add this setting! ! !
 		build = vim.fn.has("win32") ~= 0
