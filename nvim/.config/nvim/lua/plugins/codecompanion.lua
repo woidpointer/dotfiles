@@ -2,6 +2,42 @@ return {
 	"olimorris/codecompanion.nvim",
 	keys = {
 		{ "<leader>ct", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle CodeCompanion Chat", mode = "n" },
+		{
+			"<leader>cs",
+			function()
+				local adapters = { "ollama", "copilot_v" }
+				local current = vim.g.codecompanion_adapter or "copilot_v"
+				
+				vim.ui.select(adapters, {
+					prompt = "Select CodeCompanion Adapter:",
+					format_item = function(item)
+						local marker = current == item and " (current)" or ""
+						if item == "copilot_v" then
+							return "Copilot (Claude Sonnet 4.5)" .. marker
+						else
+							return "Ollama (gpt-oss:20b-32k)" .. marker
+						end
+					end,
+				}, function(choice)
+					if choice then
+						vim.g.codecompanion_adapter = choice
+						
+						-- Update config file for persistence
+						local config_path = vim.fn.stdpath("config") .. "/lua/plugins/codecompanion.lua"
+						local display_name = choice == "copilot_v" and "Copilot" or "Ollama"
+						
+						vim.notify(
+							"CodeCompanion adapter set to: " .. display_name .. "\n" ..
+							"To make this change persistent, update the 'adapter' field in:\n" ..
+							config_path,
+							vim.log.levels.INFO
+						)
+					end
+				end)
+			end,
+			desc = "Switch CodeCompanion Adapter",
+			mode = "n",
+		},
 	},
 	dependencies = {
 		"nvim-lua/plenary.nvim",
