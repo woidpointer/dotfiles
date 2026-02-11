@@ -6,8 +6,9 @@ return {
 			"<leader>cs",
 			function()
 				local adapters = { "ollama", "copilot_v" }
-				local current = vim.g.codecompanion_adapter or "copilot_v"
-				
+				local config = require("codecompanion.config")
+				local current = config.config.interactions.chat.adapter or "copilot_v"
+
 				vim.ui.select(adapters, {
 					prompt = "Select CodeCompanion Adapter:",
 					format_item = function(item)
@@ -20,18 +21,16 @@ return {
 					end,
 				}, function(choice)
 					if choice then
-						vim.g.codecompanion_adapter = choice
-						
-						-- Update config file for persistence
-						local config_path = vim.fn.stdpath("config") .. "/lua/plugins/codecompanion.lua"
-						local display_name = choice == "copilot_v" and "Copilot" or "Ollama"
-						
-						vim.notify(
-							"CodeCompanion adapter set to: " .. display_name .. "\n" ..
-							"To make this change persistent, update the 'adapter' field in:\n" ..
-							config_path,
-							vim.log.levels.INFO
-						)
+						-- Update all interaction types to use the selected adapter
+						config.config.interactions.chat.adapter = choice
+						config.config.interactions.inline.adapter = choice
+						config.config.interactions.cmd.adapter = choice
+						config.config.interactions.agent.adapter = choice
+
+						local display_name = choice == "copilot_v" and "Copilot (Claude Sonnet 4.5)"
+							or "Ollama (gpt-oss:20b-32k)"
+
+						vim.notify("CodeCompanion adapter switched to: " .. display_name, vim.log.levels.INFO)
 					end
 				end)
 			end,
