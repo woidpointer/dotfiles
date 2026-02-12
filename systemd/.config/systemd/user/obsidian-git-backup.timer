@@ -1,0 +1,10 @@
+[Unit]
+Description=Obsidian Git Backup Timer
+Requires=obsidian-git-backup.service
+
+[Timer]
+OnBoltSec=1min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

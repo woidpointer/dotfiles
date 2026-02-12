@@ -1,0 +1,8 @@
+[Unit]
+Description=Obsidian Git Backup
+After=rclone-obsidian.service
+Requires=rclone-obsidian.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/develop/bin/obsidian-git-backup.sh

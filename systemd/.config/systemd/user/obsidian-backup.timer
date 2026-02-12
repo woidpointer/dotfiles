@@ -1,0 +1,11 @@
+[Unit]
+Description=Obsidian Backup Timer
+Requires=obsidian-backup.service
+After=rclone-obsidian.service
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target
