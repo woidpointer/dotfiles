@@ -59,7 +59,7 @@ return {
 				preview = {
 					filetypes = { "markdown", "codecompanion" },
 					ignore_buftypes = {},
-					enable = true, -- disable preview as default
+					enable = false, -- disable preview as default
 				},
 			},
 		},
