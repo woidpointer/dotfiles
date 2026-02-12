@@ -53,6 +53,7 @@ return {
 					yaml = { "prettier" },
 					markdown = { "prettier" },
 					ruby = { "rubocop" },
+					cmake = { "gersemi" },
 				},
 				format_after_save = function(bufnr)
 					-- Disable with a global or buffer-local variable
