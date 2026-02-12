@@ -1,43 +1,52 @@
+local work_mode = os.getenv("WORK_MODE")
+local default_adapter
+
+if work_mode then
+	default_adapter = "copilot_v"
+else
+	default_adapter = "ollama"
+end
+
 return {
 	"olimorris/codecompanion.nvim",
-	keys = {
-		{ "<leader>ct", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle CodeCompanion Chat", mode = "n" },
-		{
-			"<leader>cs",
-			function()
-				local adapters = { "ollama", "copilot_v" }
-				local config = require("codecompanion.config")
-				local current = config.config.interactions.chat.adapter or "copilot_v"
+	lazy = false,
+	priority = 100,
+	config = function(_, opts)
+		require("codecompanion").setup(opts)
 
-				vim.ui.select(adapters, {
-					prompt = "Select CodeCompanion Adapter:",
-					format_item = function(item)
-						local marker = current == item and " (current)" or ""
-						if item == "copilot_v" then
-							return "Copilot (Claude Sonnet 4.5)" .. marker
-						else
-							return "Ollama (gpt-oss:20b-32k)" .. marker
-						end
-					end,
-				}, function(choice)
-					if choice then
-						-- Update all interaction types to use the selected adapter
-						config.config.interactions.chat.adapter = choice
-						config.config.interactions.inline.adapter = choice
-						config.config.interactions.cmd.adapter = choice
-						config.config.interactions.agent.adapter = choice
+		-- Set up keybindings after plugin loads
+		vim.keymap.set("n", "<leader>ct", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "Toggle CodeCompanion Chat" })
+		vim.keymap.set("n", "<leader>cs", function()
+			local adapters = { "ollama", "copilot_v" }
+			local config = require("codecompanion.config")
+			local current = config.config.interactions.chat.adapter or "copilot_v"
 
-						local display_name = choice == "copilot_v" and "Copilot (Claude Sonnet 4.5)"
-							or "Ollama (gpt-oss:20b-32k)"
-
-						vim.notify("CodeCompanion adapter switched to: " .. display_name, vim.log.levels.INFO)
+			vim.ui.select(adapters, {
+				prompt = "Select CodeCompanion Adapter:",
+				format_item = function(item)
+					local marker = current == item and " (current)" or ""
+					if item == "copilot_v" then
+						return "Copilot (Claude Sonnet 4.5)" .. marker
+					else
+						return "Ollama (gpt-oss:20b-32k)" .. marker
 					end
-				end)
-			end,
-			desc = "Switch CodeCompanion Adapter",
-			mode = "n",
-		},
-	},
+				end,
+			}, function(choice)
+				if choice then
+					-- Update all interaction types to use the selected adapter
+					config.config.interactions.chat.adapter = choice
+					config.config.interactions.inline.adapter = choice
+					config.config.interactions.cmd.adapter = choice
+					config.config.interactions.agent.adapter = choice
+
+					local display_name = choice == "copilot_v" and "Copilot (Claude Sonnet 4.5)"
+						or "Ollama (gpt-oss:20b-32k)"
+
+					vim.notify("CodeCompanion adapter switched to: " .. display_name, vim.log.levels.INFO)
+				end
+			end)
+		end, { desc = "Switch CodeCompanion Adapter" })
+	end,
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"nvim-treesitter/nvim-treesitter",
@@ -45,6 +54,7 @@ return {
 		{
 			"OXY2DEV/markview.nvim",
 			lazy = false,
+			event = "VeryLazy",
 			opts = {
 				preview = {
 					filetypes = { "markdown", "codecompanion" },
@@ -67,22 +77,22 @@ return {
 		},
 	},
 	opts = {
-		-- Switch between "ollama" and "copilot" by changing this variable
+		-- Adapter is set based on WORK_MODE environment variable
 		interactions = {
 			chat = {
-				adapter = "copilot_v", -- Change to "copilot" to use Copilot
+				adapter = default_adapter,
 				model = "gpt-oss:20b-32k:latest",
 			},
 			inline = {
-				adapter = "copilot_v", -- Change to "copilot" to use Copilot
+				adapter = default_adapter,
 				model = "gpt-oss:20b-32k:latest",
 			},
 			cmd = {
-				adapter = "copilot_v", -- Change to "copilot" to use Copilot
+				adapter = default_adapter,
 				model = "gpt-oss:20b-32k:latest",
 			},
 			agent = {
-				adapter = "copilot_v", -- Change to "copilot" to use Copilot
+				adapter = default_adapter,
 				model = "gpt-oss:20b-32k:latest",
 			},
 		},
