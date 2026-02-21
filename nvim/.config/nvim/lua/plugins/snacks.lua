@@ -19,6 +19,12 @@ return {
 			scratch = {
 				enabled = true,
 			},
+			picker = {
+				enabled = true,
+			},
+			bufdelete = {
+				enabled = true,
+			},
 		},
 		keys = {
 			{
@@ -41,6 +47,13 @@ return {
 					Snacks.lazygit.open()
 				end,
 				desc = "Open Lazygit",
+			},
+			{
+				"<leader>se",
+				function()
+					Snacks.picker.icons()
+				end,
+				desc = "Icons/Emojis",
 			},
 		},
 	},

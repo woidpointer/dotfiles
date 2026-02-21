@@ -4,8 +4,8 @@ return {
 	keys = {
 		{
 			"<leader>e",
-			"<cmd>Yazi<cr>",
-			desc = "open new Yazi instance in current directory",
+			"<cmd>Yazi toggle<cr>",
+			desc = "toggle Yazi (resume last session)",
 		},
 		{
 			"<leader>E",
@@ -14,8 +14,8 @@ return {
 		},
 		{
 			"<leader>-",
-			"<cmd>Yazi toggle<cr>",
-			desc = "toggle Yazi (resume last session)",
+			"<cmd>Yazi<cr>",
+			desc = "open new Yazi instance in current directory",
 		},
 	},
 	opts = {
