@@ -68,6 +68,31 @@ return {
 				desc = "Find by grepping in project directory",
 			},
 			{
+				"<leader>fG",
+				function()
+					require("fzf-lua").live_grep({
+						rg_glob_fn = function(query, _opts)
+							local search_query, extra = query:match("(.*) %-%- (.*)")
+							if not extra or extra == "" then
+								return query, nil
+							end
+							local shellescape = require("fzf-lua.libuv").shellescape
+							local parts = vim.split(extra, "%s+", { trimempty = true })
+							local escaped = {}
+							for _, part in ipairs(parts) do
+								if part:sub(1, 1) == "-" then
+									table.insert(escaped, part)
+								else
+									table.insert(escaped, shellescape(part))
+								end
+							end
+							return search_query, table.concat(escaped, " "), {}
+						end,
+					})
+				end,
+				desc = "Find by grepping (expert: pattern -- -t lua --type-not js -g !*test*)",
+			},
+			{
 				"<leader>fc",
 				function()
 					require("fzf-lua").files({ cwd = vim.fn.stdpath("config") })
