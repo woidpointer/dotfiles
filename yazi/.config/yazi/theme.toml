@@ -521,7 +521,7 @@ exts = [
   { name = "out", text = "", fg = "#494d64" },
   { name = "jsx", text = "", fg = "#7dc4e4" },
   { name = "bash", text = "", fg = "#a6da95" },
-  { name = "edn", text = "", fg = "#7dc4e4" },
+  { name = "end", text = "", fg = "#7dc4e4" },
   { name = "rss", text = "", fg = "#f5a97f" },
   { name = "flf", text = "", fg = "#f4dbd6" },
   { name = "cache", text = "", fg = "#f4dbd6" },
