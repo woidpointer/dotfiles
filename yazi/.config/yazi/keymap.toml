@@ -17,3 +17,30 @@ desc = "copy filename"
 on = [ "c", "n" ]
 run = "copy name_without_ext"
 desc = "copy filename without extension"
+
+[[mgr.prepend_keymap]]
+on = [ "u", "a" ]
+run = "plugin yamb -- save"
+desc = "Bookmark: add current dir"
+
+[[mgr.prepend_keymap]]
+on = [ "u", "g" ]
+run = "plugin yamb -- jump_by_key"
+desc = "Bookmark: jump by key"
+
+[[mgr.prepend_keymap]]
+on = [ "u", "G" ]
+run = "plugin yamb -- jump_by_fzf"
+desc = "Bookmark: jump by fzf"
+
+[[mgr.prepend_keymap]]
+on = [ "u", "d" ]
+run = "plugin yamb -- delete_by_key"
+desc = "Bookmark: delete by key"
+
+[[mgr.prepend_keymap]]
+on = [ "u", "r" ]
+run = "plugin yamb -- rename_by_key"
+desc = "Bookmark: rename by key"
+
+
