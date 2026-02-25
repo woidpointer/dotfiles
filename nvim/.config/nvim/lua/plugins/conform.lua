@@ -1,3 +1,14 @@
+local function find_clang_format()
+	-- Prüfe verschiedene Versionen in Reihenfolge
+	local versions = { "clang-format-15", "clang-format" }
+	for _, cmd in ipairs(versions) do
+		if vim.fn.executable(cmd) == 1 then
+			return cmd
+		end
+	end
+	return "clang-format" -- Fallback
+end
+
 return {
 	{
 		"stevearc/conform.nvim",
@@ -43,7 +54,7 @@ return {
 					lua = { "stylua" },
 					-- Conform will run multiple formatters sequentially
 					python = { "black", "ruff" },
-					cpp = { "clang-format" },
+					cpp = { "clang_format" },
 					-- Use the "*" filetype to run formatters on all filetypes.
 					["*"] = { "codespell" },
 					-- Use the "_" filetype to run formatters on filetypes that don't
@@ -54,6 +65,11 @@ return {
 					markdown = { "prettier" },
 					ruby = { "rubocop" },
 					cmake = { "gersemi" },
+				},
+				formatters = {
+					clang_format = {
+						command = find_clang_format(),
+					},
 				},
 				format_after_save = function(bufnr)
 					-- Disable with a global or buffer-local variable
