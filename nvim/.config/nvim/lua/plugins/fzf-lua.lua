@@ -7,7 +7,7 @@ return {
 		-- dependencies = { "echasnovski/mini.icons" },
 		opts = {
 			grep = {
-				debug = true,
+				-- debug = true,
 				rg_glob = true,
 				rg_glob_fn = function(q, _)
 					local search_query, args = q:match("(.-)%s%-%-(.*)")
