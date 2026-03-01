@@ -76,6 +76,23 @@ return {
 				end,
 				desc = "Find by grepping in project directory",
 			},
+			{ -- Testing  this new function, maybe its helpful
+				"<leader>fG",
+				function()
+					require("fzf-lua").fzf_live(
+						"git rev-list --all | xargs git grep --line-number --column --color=always <query>",
+						{
+							fzf_opts = {
+								["--delimiter"] = ":",
+								["--preview-window"] = "nohidden,down,60%,border-top,+{3}+3/3,~3",
+							},
+							preview = "git show {1}:{2} | "
+								.. "bat --style=default --color=always --file-name={2} --highlight-line={3}",
+						}
+					)
+				end,
+				desc = "Live git grep (entire history)",
+			},
 			-- This does not work, it seems the rg_glob_fn has to be a global settings
 			--
 			-- {
