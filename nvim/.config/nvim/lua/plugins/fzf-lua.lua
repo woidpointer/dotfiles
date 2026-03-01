@@ -5,7 +5,16 @@ return {
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		-- or if using mini.icons/mini.nvim
 		-- dependencies = { "echasnovski/mini.icons" },
-		opts = {},
+		opts = {
+			grep = {
+				debug = true,
+				rg_glob = true,
+				rg_glob_fn = function(q, _)
+					local search_query, args = q:match("(.-)%s%-%-(.*)")
+					return search_query, args
+				end,
+			},
+		},
 		keys = {
 			{
 				"<leader>fi",
@@ -67,31 +76,24 @@ return {
 				end,
 				desc = "Find by grepping in project directory",
 			},
-			{
-				"<leader>fG",
-				function()
-					require("fzf-lua").live_grep({
-						rg_glob_fn = function(query, _opts)
-							local search_query, extra = query:match("(.*) %-%- (.*)")
-							if not extra or extra == "" then
-								return query, nil
-							end
-							local shellescape = require("fzf-lua.libuv").shellescape
-							local parts = vim.split(extra, "%s+", { trimempty = true })
-							local escaped = {}
-							for _, part in ipairs(parts) do
-								if part:sub(1, 1) == "-" then
-									table.insert(escaped, part)
-								else
-									table.insert(escaped, shellescape(part))
-								end
-							end
-							return search_query, table.concat(escaped, " "), {}
-						end,
-					})
-				end,
-				desc = "Find by grepping (expert: pattern -- -t lua --type-not js -g !*test*)",
-			},
+			-- This does not work, it seems the rg_glob_fn has to be a global settings
+			--
+			-- {
+			-- 	"<leader>fG",
+			-- 	function()
+			-- 		require("fzf-lua").live_grep({
+			-- 			grep = {
+			-- 				debug = true,
+			-- 				rg_glob = true,
+			-- 				rg_glob_fn = function(q, _)
+			-- 					local search_query, args = q:match("(.-)%s%-%-(.*)")
+			-- 					return search_query, args
+			-- 				end,
+			-- 			},
+			-- 		})
+			-- 	end,
+			-- 	desc = "Raw ripgrep (full shell syntax)",
+			-- },
 			{
 				"<leader>fc",
 				function()
@@ -254,8 +256,8 @@ return {
 				desc = "[c]ode [s]symbols",
 			},
 		},
-		config = function()
-			require("fzf-lua").setup({})
+		config = function(_, opts)
+			require("fzf-lua").setup(opts)
 			require("fzf-lua").register_ui_select()
 		end,
 	},
