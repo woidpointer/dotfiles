@@ -272,6 +272,13 @@ return {
 				end,
 				desc = "[c]ode [s]symbols",
 			},
+			{
+				"<leader>fm",
+				function()
+					require("fzf-lua").marks()
+				end,
+				desc = "[f]ind [m]arks",
+			},
 		},
 		config = function(_, opts)
 			require("fzf-lua").setup(opts)
