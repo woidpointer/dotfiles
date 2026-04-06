@@ -37,6 +37,25 @@ return {
 			vim.keymap.set("t", "<leader>oc", function()
 				opencode:toggle()
 			end, { noremap = true, silent = true })
+
+			-- nvim mit obsidian plugin Terminal
+			local obsidian_nvim = Terminal:new({
+				cmd = "nvim ~/.vaults/work/notes",
+				hidden = true,
+				direction = "float",
+				float_opts = {
+					border = "curved",
+					width = math.floor(vim.o.columns * 0.85),
+					height = math.floor(vim.o.lines * 0.80),
+				},
+			})
+
+			vim.keymap.set("n", "<leader>to", function()
+				obsidian_nvim:toggle()
+			end, { noremap = true, silent = true, desc = "Toggle Obsidian Terminal" })
+			vim.keymap.set("t", "<leader>to", function()
+				obsidian_nvim:toggle()
+			end, { noremap = true, silent = true, desc = "Toggle Obsidian Terminal" })
 		end,
 	},
 }
