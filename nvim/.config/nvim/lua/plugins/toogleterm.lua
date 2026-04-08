@@ -29,6 +29,10 @@ return {
 					width = math.floor(vim.o.columns * 0.85),
 					height = math.floor(vim.o.lines * 0.80),
 				},
+				on_open = function(term)
+					-- Esc-Mapping nur in diesem Buffer deaktivieren
+					vim.keymap.set("t", "<Esc>", "<Esc>", { noremap = true, buffer = term.bufnr })
+				end,
 			})
 
 			--vim.keymap.set("n", "<C-c>", function()
