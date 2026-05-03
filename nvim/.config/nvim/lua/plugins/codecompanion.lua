@@ -193,7 +193,7 @@ return {
 					mapping = "parameters",
 					type = "enum",
 					desc = "The model to use.",
-					default = "claude-sonnet-4.6",
+					default = "claude-haiku-4.5",
 					choices = {
 						"claude-sonnet-4.6",
 						"claude-sonnet-4.5",
@@ -334,5 +334,23 @@ return {
 		})
 
 		vim.keymap.set("n", "<leader>ct", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "Toggle CodeCompanion Chat" })
+
+		vim.keymap.set("n", "<leader>cm", function()
+			local fzf = require("fzf-lua")
+			local choices = copilot_ghe.schema.model.choices
+			local current = copilot_ghe.schema.model.default
+			fzf.fzf_exec(choices, {
+				prompt = "CodeCompanion Model> ",
+				fzf_opts = { ["--header"] = "current: " .. current },
+				actions = {
+					["default"] = function(selected)
+						if selected and selected[1] then
+							copilot_ghe.schema.model.default = selected[1]
+							vim.notify("CodeCompanion model: " .. selected[1], vim.log.levels.INFO)
+						end
+					end,
+				},
+			})
+		end, { desc = "CodeCompanion: select model" })
 	end,
 }
