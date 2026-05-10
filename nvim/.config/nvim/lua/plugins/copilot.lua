@@ -3,10 +3,11 @@ return {
 	cmd = "Copilot",
 	event = "InsertEnter",
 	config = function()
+		local PROVIDER_URL = os.getenv("GHE_HOST") or error("GHE_HOST environment variable not set")
 		require("copilot").setup({
-			auth_provider_url = "https://vector.ghe.com",
+			auth_provider_url = PROVIDER_URL,
 			suggestion = {
-				enabled = true,
+				enabled = false,
 				auto_trigger = true,
 				keymap = {
 					accept = "<Tab>",

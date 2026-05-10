@@ -1,3 +1,5 @@
+local keys = require("config.picker")
+
 return {
 	-- lazy.nvim
 	{
@@ -21,12 +23,24 @@ return {
 			},
 			picker = {
 				enabled = true,
+				layout = {
+					layout = {
+						-- Set to "rounded", "single", "double", "solid", "none"
+						border = "solid",
+					},
+				},
 			},
 			bufdelete = {
 				enabled = true,
 			},
 		},
-		keys = {
+		config = function(_, opts)
+			require("snacks").setup(opts)
+			vim.defer_fn(function()
+				vim.api.nvim_set_hl(0, "SnacksPickerBorder", { fg = "#FFFFFF" })
+			end, 50)
+		end,
+		keys = vim.list_extend({
 			{
 				"<leader>.",
 				function()
@@ -48,13 +62,6 @@ return {
 				end,
 				desc = "Open Lazygit",
 			},
-			{
-				"<leader>se",
-				function()
-					Snacks.picker.icons()
-				end,
-				desc = "Icons/Emojis",
-			},
-		},
+		}, keys.snacks),
 	},
 }
