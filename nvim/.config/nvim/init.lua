@@ -3,7 +3,7 @@ require("config.colorscheme")
 require("config.keymaps")
 require("config.lsp")
 require("config.picker")
-
+vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#FFFFFF" })
 vim.opt.guicursor = ""
 vim.opt.relativenumber = true
 vim.opt.ruler = true
