@@ -70,6 +70,26 @@ return {
 					clang_format = {
 						command = find_clang_format(),
 					},
+					codespell = {
+						args = function()
+							local xdg_config = os.getenv("XDG_CONFIG_HOME") or vim.fn.expand("~/.config")
+							local config_path = xdg_config .. "/codespell/config"
+
+							if vim.fn.filereadable(config_path) == 1 then
+								return {
+									"--config",
+									config_path,
+									"--write-changes",
+									"$FILENAME",
+								}
+							else
+								return {
+									"--write-changes",
+									"$FILENAME",
+								}
+							end
+						end,
+					},
 				},
 				format_after_save = function(bufnr)
 					-- Disable with a global or buffer-local variable
