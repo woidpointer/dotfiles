@@ -42,7 +42,7 @@ return {
 			providers = {
 				cfu_ref = {
 					name = "cfu",
-					module = "cfu_completion",
+					module = "blink_cfu_completion",
 				},
 			},
 		},
