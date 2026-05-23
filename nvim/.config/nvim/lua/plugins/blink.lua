@@ -1,6 +1,5 @@
 return {
 	"saghen/blink.cmp",
-	enabled = true,
 	-- optional: provides snippets for the snippet source
 	dependencies = { "rafamadriz/friendly-snippets" },
 
@@ -9,19 +8,6 @@ return {
 	---@module 'blink.cmp'
 	---@type blink.cmp.Config
 	opts = {
-		-- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-		-- 'super-tab' for mappings similar to vscode (tab to accept)
-		-- 'enter' for enter to accept
-		-- 'none' for no mappings
-		--
-		-- All presets have the following mappings:
-		-- C-space: Open menu or open docs if already open
-		-- C-n/C-p or Up/Down: Select next/previous item
-		-- C-e: Hide menu
-		-- C-k: Toggle signature help (if signature.enabled = true)
-		--
-		-- See :h blink-cmp-config-keymap for defining your own keymap
-		-- keymap = { preset = "default" },
 		keymap = {
 			["<C-j>"] = { "show", "select_next", "fallback" },
 			["<C-k>"] = { "show", "select_prev", "fallback" },
@@ -40,23 +26,27 @@ return {
 			nerd_font_variant = "mono",
 		},
 
-		-- Enable method signature
 		signature = { enabled = true },
 
-		-- (Default) Only show the documentation popup when manually triggered
-		completion = { documentation = { auto_show = false } },
-
-		-- Default list of enabled providers defined so that you can extend it
-		-- elsewhere in your config, without redefining it, due to `opts_extend`
-		sources = {
-			default = { "lsp", "path", "snippets", "buffer" },
+		completion = {
+			documentation = { auto_show = false },
 		},
 
-		-- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
-		-- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
-		-- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
-		--
-		-- See the fuzzy documentation for more information
+		sources = {
+			default = { "lsp", "path", "snippets", "buffer" },
+			-- Für json5: path-Source deaktivieren (kollidiert mit cfu ref-Completion),
+			-- stattdessen eigenen cfu-Source nutzen
+			per_filetype = {
+				json5 = { "cfu_ref", "snippets", "buffer" },
+			},
+			providers = {
+				cfu_ref = {
+					name = "cfu",
+					module = "cfu_completion",
+				},
+			},
+		},
+
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
 	opts_extend = { "sources.default" },

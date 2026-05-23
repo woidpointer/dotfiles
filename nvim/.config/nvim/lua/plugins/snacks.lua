@@ -23,6 +23,11 @@ return {
 			},
 			picker = {
 				enabled = true,
+				formatters = {
+					grep = {
+						filename_first = true,
+					},
+				},
 				layout = {
 					layout = {
 						-- Set to "rounded", "single", "double", "solid", "none"

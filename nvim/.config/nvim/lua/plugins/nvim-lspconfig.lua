@@ -13,6 +13,13 @@ return {
 		},
 
 		config = function()
+			-- Filetype für json5-Dateien registrieren (wird von Neovim nicht automatisch erkannt)
+			vim.filetype.add({
+				extension = {
+					json5 = "json5",
+				},
+			})
+
 			-- Use the new vim.lsp.config API (Neovim 0.11+)
 			vim.lsp.config.lua_ls = {
 				cmd = { "lua-language-server" },
@@ -32,6 +39,15 @@ return {
 
 			-- Enable the LSP
 			vim.lsp.enable("lua_ls")
+
+		vim.lsp.config.cfu = {
+			cmd = { "/home/cmarchl/.local/bin/cfu", "lsp", "--stdio" },
+			filetypes = { "json5" },
+			root_markers = { ".git" },
+		}
+
+		-- Enable cfu lsp
+		vim.lsp.enable("cfu")
 
 			-- Brief aside: **What is LSP?**
 			--
@@ -85,8 +101,11 @@ return {
 					--    See `:help CursorHold` for information about when this is executed
 					--
 					-- When you move your cursor, the highlights will be cleared (the second autocommand).
-					local client = vim.lsp.get_client_by_id(event.data.client_id)
-					if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+				local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+	
+
+				if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
 						local highlight_augroup =
 							vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
