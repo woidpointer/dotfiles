@@ -1,6 +1,6 @@
 return {
 	{
-		"jbyuki/venn.nvim",
+		"woidpointer/venn.nvim",
 		lazy = false,
 		keys = {
 			{
@@ -11,12 +11,12 @@ return {
 						vim.b.venn_enabled = true
 						vim.cmd([[setlocal ve=all]])
 						-- Linien zeichnen mit HJKL
-						vim.keymap.set("n", "J", "<C-v>j:VBox<CR>", { noremap = true, buffer = true })
-						vim.keymap.set("n", "K", "<C-v>k:VBox<CR>", { noremap = true, buffer = true })
-						vim.keymap.set("n", "L", "<C-v>l:VBox<CR>", { noremap = true, buffer = true })
-						vim.keymap.set("n", "H", "<C-v>h:VBox<CR>", { noremap = true, buffer = true })
+						vim.keymap.set("n", "J", "<C-v>j:VBoxC<CR>", { noremap = true, buffer = true })
+						vim.keymap.set("n", "K", "<C-v>k:VBoxC<CR>", { noremap = true, buffer = true })
+						vim.keymap.set("n", "L", "<C-v>l:VBoxC<CR>", { noremap = true, buffer = true })
+						vim.keymap.set("n", "H", "<C-v>h:VBoxC<CR>", { noremap = true, buffer = true })
 						-- Box um Visual-Block-Selektion zeichnen
-						vim.keymap.set("v", "f", ":VBox<CR>", { noremap = true, buffer = true })
+						vim.keymap.set("v", "f", ":VBoxC<CR>", { noremap = true, buffer = true })
 						vim.notify("Venn mode ON", vim.log.levels.INFO)
 					else
 						vim.cmd([[setlocal ve=]])
@@ -30,6 +30,26 @@ return {
 					end
 				end,
 				desc = "Toggle Venn diagram mode",
+			},
+			{
+				"<leader>fv",
+				function()
+					local venn = require("venn")
+					local fzf = require("fzf-lua")
+					fzf.fzf_exec(venn.list_styles(), {
+						prompt = "Venn Style> ",
+						fzf_opts = { ["--header"] = "current: " .. venn.get_style() },
+						actions = {
+							["default"] = function(selected)
+								if selected and selected[1] then
+									venn.set_style(selected[1])
+									vim.notify("Venn style: " .. selected[1], vim.log.levels.INFO)
+								end
+							end,
+						},
+					})
+				end,
+				desc = "Venn: select line style",
 			},
 		},
 	},
