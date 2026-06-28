@@ -39,8 +39,7 @@ return {
 		local log = require("codecompanion.utils.log")
 		local openai = require("codecompanion.adapters.http.openai")
 
-		local PROVIDER_URL = os.getenv("GHE_HOST") or error("GHE_HOST environment variable not set")
-		local TOKEN_URL = "https://api." .. PROVIDER_URL .. "/copilot_internal/v2/token"
+		local PROVIDER_URL = os.getenv("GHE_HOST")
 		local _oauth_token = nil
 		local _copilot_token = nil
 
@@ -102,6 +101,7 @@ return {
 				log:error("GHE Adapter: No OAuth token found for %s", PROVIDER_URL)
 				return nil
 			end
+			local TOKEN_URL = "https://api." .. PROVIDER_URL .. "/copilot_internal/v2/token"
 			local ok, request = pcall(curl.get, TOKEN_URL, {
 				headers = {
 					Authorization = "Bearer " .. oauth,
@@ -129,7 +129,7 @@ return {
 			roles = { llm = "assistant", tool = "tool", user = "user" },
 			opts = { stream = true, tools = true, vision = false },
 			features = { text = true, tokens = true },
-			url = "https://copilot-api." .. PROVIDER_URL .. "/chat/completions",
+			url = PROVIDER_URL and ("https://copilot-api." .. PROVIDER_URL .. "/chat/completions") or "",
 			env = {
 				api_key = function()
 					local t = get_copilot_token()
@@ -193,7 +193,7 @@ return {
 					mapping = "parameters",
 					type = "enum",
 					desc = "The model to use.",
-					default = "claude-haiku-4.5",
+					default = "claude-sonnet-4.6",
 					choices = {
 						"claude-sonnet-4.6",
 						"claude-sonnet-4.5",
@@ -202,8 +202,6 @@ return {
 						"claude-haiku-4.5",
 						"gpt-4.1",
 						"gpt-4o",
-						"gpt-5.2",
-						"gemini-3-flash-preview",
 					},
 				},
 				temperature = {
@@ -221,6 +219,43 @@ return {
 			},
 		}
 
+		local anthropic_schema = {
+			model = {
+				order = 1,
+				mapping = "parameters",
+				type = "enum",
+				desc = "The Claude model to use.",
+				default = "claude-sonnet-4-6",
+				choices = {
+					"claude-opus-4-8",
+					"claude-sonnet-4-6",
+					"claude-haiku-4-5-20251001",
+				},
+			},
+			temperature = {
+				order = 2,
+				mapping = "parameters",
+				type = "number",
+				default = 0.1,
+			},
+			max_tokens = {
+				order = 3,
+				mapping = "parameters",
+				type = "integer",
+				default = 16384,
+			},
+		}
+
+		-- Default: Copilot wenn GHE_HOST gesetzt, sonst Anthropic
+		local default_adapter = PROVIDER_URL and "copilot_ghe" or "anthropic"
+
+		local interactions = {
+			chat = { adapter = default_adapter },
+			inline = { adapter = default_adapter },
+			cmd = { adapter = default_adapter },
+			agent = { adapter = default_adapter },
+		}
+
 		require("codecompanion").setup({
 			adapters = {
 				http = {
@@ -228,14 +263,15 @@ return {
 						return copilot_ghe
 					end,
 				},
+				anthropic = function()
+					return require("codecompanion.adapters").extend("anthropic", {
+						env = { api_key = "ANTHROPIC_API_KEY" },
+						schema = anthropic_schema,
+					})
+				end,
 			},
 
-			interactions = {
-				chat = { adapter = "copilot_ghe" },
-				inline = { adapter = "copilot_ghe" },
-				cmd = { adapter = "copilot_ghe" },
-				agent = { adapter = "copilot_ghe" },
-			},
+			interactions = interactions,
 
 			display = {
 				diff = { provider = "mini_diff" },
@@ -335,22 +371,61 @@ return {
 
 		vim.keymap.set("n", "<leader>ct", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "Toggle CodeCompanion Chat" })
 
+		-- Kombinierter Adapter+Modell-Picker
 		vim.keymap.set("n", "<leader>cm", function()
 			local fzf = require("fzf-lua")
-			local choices = copilot_ghe.schema.model.choices
-			local current = copilot_ghe.schema.model.default
-			fzf.fzf_exec(choices, {
-				prompt = "CodeCompanion Model> ",
-				fzf_opts = { ["--header"] = "current: " .. current },
+
+			local entries = {}
+			if PROVIDER_URL then
+				for _, m in ipairs(copilot_ghe.schema.model.choices) do
+					table.insert(entries, "[Copilot] " .. m)
+				end
+			end
+			for _, m in ipairs(anthropic_schema.model.choices) do
+				table.insert(entries, "[Anthropic] " .. m)
+			end
+
+			local current_adapter = interactions.chat.adapter
+			local current_model = current_adapter == "copilot_ghe"
+				and copilot_ghe.schema.model.default
+				or anthropic_schema.model.default
+			local header = "active: "
+				.. (current_adapter == "copilot_ghe" and "[Copilot]" or "[Anthropic]")
+				.. " "
+				.. current_model
+
+			fzf.fzf_exec(entries, {
+				prompt = "CodeCompanion> ",
+				fzf_opts = { ["--header"] = header },
 				actions = {
 					["default"] = function(selected)
-						if selected and selected[1] then
-							copilot_ghe.schema.model.default = selected[1]
-							vim.notify("CodeCompanion model: " .. selected[1], vim.log.levels.INFO)
+						if not selected or not selected[1] then
+							return
 						end
+						local choice = selected[1]
+						local adapter, model
+
+						if choice:match("^%[Copilot%]") then
+							adapter = "copilot_ghe"
+							model = choice:match("^%[Copilot%] (.+)$")
+							copilot_ghe.schema.model.default = model
+						elseif choice:match("^%[Anthropic%]") then
+							adapter = "anthropic"
+							model = choice:match("^%[Anthropic%] (.+)$")
+							anthropic_schema.model.default = model
+						else
+							return
+						end
+
+						interactions.chat.adapter = adapter
+						interactions.inline.adapter = adapter
+						interactions.cmd.adapter = adapter
+						interactions.agent.adapter = adapter
+
+						vim.notify("CodeCompanion: " .. choice, vim.log.levels.INFO)
 					end,
 				},
 			})
-		end, { desc = "CodeCompanion: select model" })
+		end, { desc = "CodeCompanion: select adapter & model" })
 	end,
 }
