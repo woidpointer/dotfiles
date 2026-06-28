@@ -3,7 +3,10 @@ return {
 	cmd = "Copilot",
 	event = "InsertEnter",
 	config = function()
-		local PROVIDER_URL = os.getenv("GHE_HOST") or error("GHE_HOST environment variable not set")
+		local PROVIDER_URL = os.getenv("GHE_HOST")
+		if not PROVIDER_URL then
+			return
+		end
 		require("copilot").setup({
 			auth_provider_url = PROVIDER_URL,
 			suggestion = {
