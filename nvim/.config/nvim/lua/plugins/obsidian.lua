@@ -31,6 +31,7 @@ return {
 		version = "*",
 		lazy = true,
 		event = "VeryLazy",
+		cmd = "Obsidian",
 		ft = "markdown",
 		keys = {
 			{
